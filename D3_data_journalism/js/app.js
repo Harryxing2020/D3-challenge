@@ -71,15 +71,15 @@ d3.csv("../data/data.csv").then(function (censusData) {
     chartGroup.append("g")
         .call(leftAxis);
 
-    // Step 5: Create Circles
-    // append circles to data points
     var circlesGroup = chartGroup.selectAll("circle")
         .data(censusData)
         .enter()
         .append("circle")
-        .attr("r", "11")
+        .attr("r", "15")
         .attr("fill", "SteelBlue")
-        .attr("opacity", ".5");
+        .attr("opacity", ".5")
+        .attr("cx", d => xLinearScale(d.poverty))
+        .attr("cy", d => yLinearScale(d.healthcare));
 
     var circleLabels = chartGroup.selectAll(null).data(censusData).enter().append("text");
 
@@ -101,23 +101,59 @@ d3.csv("../data/data.csv").then(function (censusData) {
     // Create axes labels
     chartGroup.append("text")
         .attr("transform", "rotate(-90)")
-        .attr("y", 0 - margin.left + 40)
+        .attr("y", 0 - margin.left + 30)
         .attr("x", 0 - (height / 2))
         .attr("dy", "1em")
         .attr("class", "axisText")
         .text("Lacks Healthcare (%)");
 
     chartGroup.append("text")
-        .attr("transform", `translate(${width / 2}, ${height + margin.top + 30})`)
+        .attr("transform", `translate(${width / 2}, ${height + margin.top + 20})`)
         .attr("class", "axisText")
         .text("In Poverty (%)");
 
-    // ==============================
-    circlesGroup = chartGroup.selectAll("circle")
-    .transition()
-    .duration(1000)
-    .attr("cx", d => xLinearScale(d.poverty))
-    .attr("cy", d => yLinearScale(d.healthcare));
+
+    // Step 5: Create Circles
+    // append circles to data points
+    // var circlesGroup = chartGroup.selectAll("circle")
+    // .data(censusData)
+    // .enter()
+    // .append("circle")
+    // .attr("r", "11")
+    // .attr("fill", "SteelBlue")
+    // .attr("opacity", ".5")
+    // .attr("cx", d => xLinearScale(d.poverty))
+    // .attr("cy", d => yLinearScale(d.healthcare));
+
+
+    // // ==============================
+    // circlesGroup = chartGroup.selectAll("circle")
+    // .transition()
+    // .duration(1000)
+    // .attr("cx", d => xLinearScale(d.poverty))
+    // .attr("cy", d => yLinearScale(d.healthcare));
+
+    // ========================================
+      // Step 1: Initialize Tooltip
+      var toolTip = d3.tip()
+        .attr("class", "tooltip")
+        .offset([80, -60])
+        .html(function(d) {
+          return (`<strong>${(d.state)}<strong><hr>Poverty:${d.poverty}% <br>Healthcare:${d.healthcare}%`);
+        });
+
+      // Step 2: Create the tooltip in chartGroup.
+      chartGroup.call(toolTip);
+
+      // Step 3: Create "mouseover" event listener to display tooltip
+      circlesGroup.on("mouseover", function(d) {
+        toolTip.show(d, this);
+      })
+      // Step 4: Create "mouseout" event listener to hide tooltip
+        .on("mouseout", function(d) {
+          toolTip.hide(d);
+        });
+
 
 
     // // Step 6: Initialize tool tip
