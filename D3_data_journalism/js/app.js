@@ -45,29 +45,22 @@ d3.csv("../data/data.csv").then(function(censusData) {
     });
 
     console.log(censusData)
-    censusData.forEach(function(data){
-        if (data.id ===33 ){
-            console.log(data.poverty)
-            console.log(data.healthcare)
-        }
-    })
-
 
     console.log(d3.extent(censusData, d => d.poverty))
     // Step 2: Create scale functions
     // ==============================
     var xLinearScale = d3.scaleLinear()
-      .domain([8,  d3.max(censusData, d => d.poverty)])
+      .domain([8,  d3.max(censusData, d => d.poverty)+2])
       .range([0, width]);
 
     var yLinearScale = d3.scaleLinear()
-      .domain([4, d3.max(censusData, d => d.healthcare)])
+      .domain([4, d3.max(censusData, d => d.healthcare)+2])
       .range([height, 0]);
 
     // Step 3: Create axis functions
     // ==============================
-    var bottomAxis = d3.axisBottom(xLinearScale);
-    var leftAxis = d3.axisLeft(yLinearScale);
+    var bottomAxis = d3.axisBottom(xLinearScale).ticks(8);
+    var leftAxis = d3.axisLeft(yLinearScale).ticks(8);
 
     // Step 4: Append Axes to the chart
     // ==============================
@@ -77,12 +70,10 @@ d3.csv("../data/data.csv").then(function(censusData) {
 
     chartGroup.append("g")
       .call(leftAxis);
+    console.log("-----------------------------")
+    console.log(d3.max(censusData, d => d.healthcare))
+    console.log(d3.max(censusData, d => d.poverty))
 
-
-  // Step 7: Create the axes
-  // =================================
-  var bottomAxis = d3.axisBottom(xTimeScale).ticks(6);
-  var leftAxis = d3.axisLeft(yLinearScale);
 
 
     // // Step 5: Create Circles
