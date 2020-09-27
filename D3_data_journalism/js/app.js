@@ -23,39 +23,67 @@ var chartGroup = svg.append("g")
 // Import Data
 d3.csv("../data/data.csv").then(function(censusData) {
 
+    // Step 1: Parse Data/Cast as numbers
+    // ==============================
+    censusData.forEach(function(data) {
+        data.id = +data.id;
+        data.age = +data.age;
+        data.ageMoe = +data.ageMoe;
+        data.healthcare = +data.healthcare;
+        data.healthcareHigh = +data.healthcareHigh;
+        data.healthcareLow = +data.healthcareLow;
+        data.income = +data.income;
+        data.incomeMoe = +data.incomeMoe;
+        data.obesity = +data.obesity;
+        data.obesityHigh = +data.obesityHigh;
+        data.obesityLow = +data.obesityLow;
+        data.poverty = +data.poverty;
+        data.povertyMoe = +data.povertyMoe;
+        data.smokes = +data.smokes;
+        data.smokesHigh = +data.smokesHigh;
+        data.smokesLow = +data.smokesLow;
+    });
 
     console.log(censusData)
+    censusData.forEach(function(data){
+        if (data.id ===33 ){
+            console.log(data.poverty)
+            console.log(data.healthcare)
+        }
+    })
 
-    // // Step 1: Parse Data/Cast as numbers
-    // // ==============================
-    // hairData.forEach(function(data) {
-    //   data.hair_length = +data.hair_length;
-    //   data.num_hits = +data.num_hits;
-    // });
 
-    // // Step 2: Create scale functions
-    // // ==============================
-    // var xLinearScale = d3.scaleLinear()
-    //   .domain([20, d3.max(hairData, d => d.hair_length)])
-    //   .range([0, width]);
+    console.log(d3.extent(censusData, d => d.poverty))
+    // Step 2: Create scale functions
+    // ==============================
+    var xLinearScale = d3.scaleLinear()
+      .domain([8,  d3.max(censusData, d => d.poverty)])
+      .range([0, width]);
 
-    // var yLinearScale = d3.scaleLinear()
-    //   .domain([0, d3.max(hairData, d => d.num_hits)])
-    //   .range([height, 0]);
+    var yLinearScale = d3.scaleLinear()
+      .domain([4, d3.max(censusData, d => d.healthcare)])
+      .range([height, 0]);
 
-    // // Step 3: Create axis functions
-    // // ==============================
-    // var bottomAxis = d3.axisBottom(xLinearScale);
-    // var leftAxis = d3.axisLeft(yLinearScale);
+    // Step 3: Create axis functions
+    // ==============================
+    var bottomAxis = d3.axisBottom(xLinearScale);
+    var leftAxis = d3.axisLeft(yLinearScale);
 
-    // // Step 4: Append Axes to the chart
-    // // ==============================
-    // chartGroup.append("g")
-    //   .attr("transform", `translate(0, ${height})`)
-    //   .call(bottomAxis);
+    // Step 4: Append Axes to the chart
+    // ==============================
+    chartGroup.append("g")
+      .attr("transform", `translate(0, ${height})`)
+      .call(bottomAxis);
 
-    // chartGroup.append("g")
-    //   .call(leftAxis);
+    chartGroup.append("g")
+      .call(leftAxis);
+
+
+  // Step 7: Create the axes
+  // =================================
+  var bottomAxis = d3.axisBottom(xTimeScale).ticks(6);
+  var leftAxis = d3.axisLeft(yLinearScale);
+
 
     // // Step 5: Create Circles
     // // ==============================
