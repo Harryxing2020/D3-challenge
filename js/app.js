@@ -113,8 +113,8 @@ function makeResponsive() {
                 label1_tail = "%";
                 break;
             case 'age':
-                label1 = "Age Rate: ";
-                label1_tail = "%";
+                label1 = "Age(Median): ";
+                label1_tail = "";
                 break;
             case 'income':
                 label1 = "Household: $";
@@ -283,7 +283,7 @@ function makeResponsive() {
             .attr("y", 40)
             .attr("value", "age") // value to grab for event listener
             .classed("inactive", true)
-            .text("Age Rate (%)");
+            .text("Age(Median)");
 
         var incomeLabel = xlabelsGroup.append("text")
             .attr("x", 0)
