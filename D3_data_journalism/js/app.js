@@ -197,7 +197,7 @@ function makeResponsive() {
     }
 
     // Import Data
-    d3.csv("../data/data.csv").then(function (censusData) {
+    d3.csv("/data/data.csv").then(function (censusData) {
 
         // Step 1: Parse Data/Cast as numbers
         // ==============================
