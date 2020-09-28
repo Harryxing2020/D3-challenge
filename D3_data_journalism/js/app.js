@@ -142,7 +142,7 @@ function makeResponsive() {
             .attr("class", "tooltip")
             .offset([80, -60])
             .html(function (d) {
-                return (`${d.state}<br>${label1} ${d[chosenXAxis]} <br>${label2} ${d[chosenYAxis]}%`);
+                return (`${d.state}<hr>${label1} ${d[chosenXAxis]} <br>${label2} ${d[chosenYAxis]}`);
 
             });
 
@@ -156,6 +156,27 @@ function makeResponsive() {
             .on("mouseout", function (data, index) {
                 toolTip.hide(data);
             });
+
+
+            //////////////////////////////////////////////
+            var circleLabels = chartGroup.selectAll(null).data(censusData).enter().append("text");
+
+            circleLabels
+                .attr("x", function (d) {
+                    return xLinearScale(d[chosenXAxis]);
+                })
+                .attr("y", function (d) {
+                    return yLinearScale(d[chosenYAxis]);
+                })
+                .text(function (d) {
+                    return d.abbr;
+                })
+                .attr("font-family", "sans-serif")
+                .attr("font-size", "10px")
+                .attr("text-anchor", "middle")
+                .attr("fill", "white");
+
+
 
         return circlesGroup;
     }
@@ -227,17 +248,7 @@ function makeResponsive() {
             .attr("fill", "SteelBlue")
             .attr("opacity", ".5");
 
-            censusData.forEach(function(data){
-                if (data.id===33){
-                    console.log(data.id)
-                    console.log(data.poverty)
-                    console.log(data.obesity)
-                    console.log(data.smokes)
 
-                }
-                
-
-            })
 
 
         //////////////////////////////////////////////////////////////
