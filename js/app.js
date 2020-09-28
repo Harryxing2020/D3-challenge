@@ -173,11 +173,11 @@ function makeResponsive() {
 
     ////////////////////////////////////////////////////
 
-    function addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale) {
+    function addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, duration) {
 
 
         circleLabels.transition()
-            .duration(800)
+            .duration(duration)
             .attr("x", function (d) {
                 return xLinearScale(d[chosenXAxis]);
             })
@@ -325,7 +325,7 @@ function makeResponsive() {
         // updateToolTip function above csv import
         var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
-        circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale);
+        circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, 0);
 
         //////////////////////////////////////////////////////////////
         // x axis labels event listener
@@ -356,7 +356,7 @@ function makeResponsive() {
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
 
-                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale);
+                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale,800);
 
 
                     //////////////////////////////////////////////
@@ -439,7 +439,7 @@ function makeResponsive() {
                     // updates tooltips with new info
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
-                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale);
+                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale,800);
 
 
                     //////////////////////////////////////////////
