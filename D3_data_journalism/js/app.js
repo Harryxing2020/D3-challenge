@@ -105,36 +105,42 @@ function makeResponsive() {
     // function used for updating circles group with new tooltip
     function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
-        var label1, label2;
+        var label1, label2, label1_tail, label2_tail;
 
-
-        //////////////////////////////////////////////
         switch (chosenXAxis) {
             case 'poverty':
-                label1 = "Poverty Rate %:";
+                label1 = "Poverty Rate: ";
+                label1_tail = "%";
                 break;
             case 'age':
-                label1 = "Age Rate %:";
+                label1 = "Age Rate: ";
+                label1_tail = "%";
                 break;
             case 'income':
-                label1 = "Household $:";
+                label1 = "Household: $";
+                label1_tail = "";
                 break;
             default:
-                label1 = "Poverty:";
+                label1 = "Poverty Rate: ";
+                label1_tail = "%";
         }
 
         switch (chosenYAxis) {
             case 'healthcare':
-                label2 = "Healthcare Rate %:";
+                label2 = "Healthcare Rate: ";
+                label2_tail = "%";
                 break;
             case 'obesity':
-                label2 = "Obesity Rate %:";
+                label2 = "Obesity Rate: ";
+                label2_tail = "%";
                 break;
             case 'smokes':
-                label2 = "Smoke Rate %:";
+                label2 = "Smoke Rate: ";
+                label2_tail = "%";
                 break;
             default:
-                label2 = "Healthcare Rate %";
+                label2 = "Healthcare Rate: ";
+                label2_tail = "%";
         }
 
         //////////////////////////////////////////////
@@ -144,7 +150,8 @@ function makeResponsive() {
             .attr("class", "tooltip")
             // .offset([80, -60])
             .html(function (d) {
-                return (`${d.state}<hr>${label1} ${d[chosenXAxis]} <br>${label2} ${d[chosenYAxis]}`);
+                return (`${d.state}<hr>${label1}${d[chosenXAxis]}${label1_tail} 
+                <hr>${label2}${d[chosenYAxis]}${label2_tail}`);
 
             });
 
