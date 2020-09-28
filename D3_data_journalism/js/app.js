@@ -6,7 +6,7 @@ function makeResponsive() {
         svgArea.remove();
     }
     var svgHeight = window.innerHeight - 100;
-    var svgWidth = window.innerWidth-100;
+    var svgWidth = window.innerWidth - 100;
 
     var margin = {
         top: 20,
@@ -36,8 +36,8 @@ function makeResponsive() {
     function xScale(censusData, chosenXAxis) {
         // create scales
         var xLinearScale = d3.scaleLinear()
-            .domain([d3.min(censusData, d => d[chosenXAxis]) * 0.8,
-            d3.max(censusData, d => d[chosenXAxis]) * 1.2
+            .domain([d3.min(censusData, d => d[chosenXAxis]) * 0.9,
+            d3.max(censusData, d => d[chosenXAxis])*1.05
             ])
             .range([0, width]);
 
@@ -50,7 +50,9 @@ function makeResponsive() {
     function yScale(censusData, chosenYAxis) {
         // create scales
         var yLinearScale = d3.scaleLinear()
-            .domain([4, d3.max(censusData, d => d[chosenYAxis])*1.1])
+            .domain([d3.min(censusData, d => d[chosenYAxis])*0.8,
+            d3.max(censusData, d => d[chosenYAxis]*1.05)
+            ])
             .range([height, 0]);
 
         return yLinearScale;
@@ -158,30 +160,34 @@ function makeResponsive() {
             });
 
 
-            //////////////////////////////////////////////
-            var circleLabels = chartGroup.selectAll(null).data(censusData).enter().append("text");
-
-            circleLabels
-                .attr("x", function (d) {
-                    return xLinearScale(d[chosenXAxis]);
-                })
-                .attr("y", function (d) {
-                    return yLinearScale(d[chosenYAxis]);
-                })
-                .text(function (d) {
-                    return d.abbr;
-                })
-                .attr("font-family", "sans-serif")
-                .attr("font-size", "10px")
-                .attr("text-anchor", "middle")
-                .attr("fill", "white");
-
-
-
+        //////////////////////////////////////////////
         return circlesGroup;
     }
 
     ////////////////////////////////////////////////////
+
+    function addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale) {
+
+
+        circleLabels.transition()
+            .duration(800)
+            .attr("x", function (d) {
+                return xLinearScale(d[chosenXAxis]);
+            })
+            .attr("y", function (d) {
+                return yLinearScale(d[chosenYAxis]);
+            })
+            .text(function (d) {
+                return d.abbr;
+            })
+            .attr("font-family", "sans-serif")
+            .attr("font-size", "10px")
+            .attr("text-anchor", "middle")
+            .attr("fill", "white");
+
+        return circleLabels;
+
+    }
 
     // Import Data
     d3.csv("../data/data.csv").then(function (censusData) {
@@ -248,8 +254,9 @@ function makeResponsive() {
             .attr("fill", "SteelBlue")
             .attr("opacity", ".5");
 
+        //////////////////////////////////////////////////////////////
 
-
+        var circleLabels = chartGroup.selectAll(null).data(censusData).enter().append("text");
 
         //////////////////////////////////////////////////////////////
 
@@ -311,6 +318,8 @@ function makeResponsive() {
         // updateToolTip function above csv import
         var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
+        circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale);
+
         //////////////////////////////////////////////////////////////
         // x axis labels event listener
         xlabelsGroup.selectAll("text")
@@ -318,7 +327,7 @@ function makeResponsive() {
                 // get value of selection
                 var value = d3.select(this).attr("value");
 
-                console.log("test ", value)
+
                 if (value !== chosenXAxis) {
 
                     // replaces chosenXAxis with value
@@ -338,6 +347,9 @@ function makeResponsive() {
 
                     // updates tooltips with new info
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
+
+                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale);
 
 
                     //////////////////////////////////////////////
@@ -419,6 +431,8 @@ function makeResponsive() {
 
                     // updates tooltips with new info
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
+                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale);
 
 
                     //////////////////////////////////////////////
