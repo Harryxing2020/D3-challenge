@@ -37,7 +37,7 @@ function makeResponsive() {
         // create scales
         var xLinearScale = d3.scaleLinear()
             .domain([d3.min(censusData, d => d[chosenXAxis]) * 0.9,
-            d3.max(censusData, d => d[chosenXAxis])*1.05
+            d3.max(censusData, d => d[chosenXAxis]) * 1.05
             ])
             .range([0, width]);
 
@@ -50,8 +50,8 @@ function makeResponsive() {
     function yScale(censusData, chosenYAxis) {
         // create scales
         var yLinearScale = d3.scaleLinear()
-            .domain([d3.min(censusData, d => d[chosenYAxis])*0.8,
-            d3.max(censusData, d => d[chosenYAxis]*1.05)
+            .domain([d3.min(censusData, d => d[chosenYAxis]) * 0.8,
+            d3.max(censusData, d => d[chosenYAxis] * 1.05)
             ])
             .range([height, 0]);
 
@@ -117,7 +117,7 @@ function makeResponsive() {
                 label1_tail = "";
                 break;
             case 'income':
-                label1 = "Household: $";
+                label1 = "Household: ";
                 label1_tail = "";
                 break;
             default:
@@ -150,7 +150,19 @@ function makeResponsive() {
             .attr("class", "tooltip")
             // .offset([80, -60])
             .html(function (d) {
-                return (`${d.state}<hr>${label1}${d[chosenXAxis]}${label1_tail} 
+
+                incomeOutput = "";
+                if (chosenXAxis === 'income') {
+                    incomeOutput = d[chosenXAxis].toLocaleString('en-US', {
+                        style: 'currency',
+                        currency: 'USD',
+                        minimumFractionDigits: 0,
+                        maximumFractionDigits: 0
+                    });
+                }
+
+
+                return (`${d.state}<hr>${label1}${incomeOutput != '' ? incomeOutput : d[chosenXAxis]}${label1_tail} 
                 <hr>${label2}${d[chosenYAxis]}${label2_tail}`);
 
             });
@@ -159,7 +171,16 @@ function makeResponsive() {
         circlesGroup.call(toolTip);
 
         circlesGroup.on("mouseover", function (data) {
+            // d3.select(this)
+            // .transition()
+            // .duration(800)
+            // .attr("r", 30)
+            // .attr("fill", "SteelBlue");
+
+
+
             toolTip.show(data);
+
         })
             // onmouseout event
             .on("mouseout", function (data, index) {
@@ -356,7 +377,7 @@ function makeResponsive() {
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
 
-                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale,800);
+                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, 800);
 
 
                     //////////////////////////////////////////////
@@ -439,7 +460,7 @@ function makeResponsive() {
                     // updates tooltips with new info
                     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
-                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale,800);
+                    circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, 800);
 
 
                     //////////////////////////////////////////////
