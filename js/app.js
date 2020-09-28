@@ -2,7 +2,7 @@
 // define global varable 
 ////////////////////////////////////////////////////
 // init the range size
-var svgHeight, svgWidth, width, height, censusData=[];
+var svgHeight, svgWidth, width, height, censusData = [];
 
 var margin = {
     top: 70,
@@ -249,7 +249,7 @@ function makeResponsive() {
             data.smokesLow = +data.smokesLow;
         });
         censusData = census;
-    
+
 
         // xLinearScale function above csv import
         var xLinearScale = xScale(chosenXAxis);
@@ -258,10 +258,9 @@ function makeResponsive() {
         var yLinearScale = yScale(chosenYAxis);
 
         // Create axis functions
-        var bottomAxis = d3.axisBottom(xLinearScale).ticks(8);
-        var leftAxis = d3.axisLeft(yLinearScale).ticks(8);
-
-        // append bottom axis
+        var bottomAxis = d3.axisBottom(xLinearScale).ticks(8 * window.innerWidth/1295);
+        var leftAxis = d3.axisLeft(yLinearScale).ticks(8*window.innerHeight/754);
+        
         var xAxis = chartGroup.append("g")
             .classed("x-axis", true)
             .attr("transform", `translate(0, ${height})`)
@@ -278,11 +277,11 @@ function makeResponsive() {
             .append("circle")
             .attr("cx", d => xLinearScale(d[chosenXAxis]))
             .attr("cy", d => yLinearScale(d[chosenYAxis]))
-            .attr("r", 15)
+            .attr("r", 15 * window.innerWidth/1295)
             .attr("fill", "SteelBlue")
             .attr("opacity", ".5");
 
-
+            
         // append circle label 
         var circleLabels = chartGroup.selectAll(null).data(censusData).enter().append("text");
 
@@ -497,7 +496,6 @@ function makeResponsive() {
     });
 
 }
-
 
 //initial default page
 makeResponsive();
