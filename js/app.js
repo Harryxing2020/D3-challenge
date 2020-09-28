@@ -148,6 +148,7 @@ function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
                     maximumFractionDigits: 0
                 });
             }
+
             return (`${d.state}<hr>${label1}${incomeOutput != '' ? incomeOutput : d[chosenXAxis]}${label1_tail} 
                 <hr>${label2}${d[chosenYAxis]}${label2_tail}`);
 
@@ -181,10 +182,17 @@ function addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinear
             return yLinearScale(d[chosenYAxis]);
         })
         .text(function (d) {
+
+
+            if ((window.innerHeight / 754) < 0.7 || (window.innerWidth / 1295) < 0.7) {
+                // if window too small, the label will be disabled.
+                return "";
+            }
+
             return d.abbr;
         })
         .attr("font-family", "sans-serif")
-        .attr("font-size", "10px")
+        .attr("font-size", `${12 * window.innerWidth / 1295}px`)
         .attr("text-anchor", "middle")
         .attr("fill", "white");
 
@@ -193,7 +201,112 @@ function addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinear
 }
 
 ////////////////////////////////////////////////////
-// function 9: when window size changes, event will call the function
+// function 9: setup active tag
+////////////////////////////////////////////////////
+
+function setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel, incomeLabel) {
+    // enable selected tag and disable other tags
+    switch (chosenXAxis) {
+        case 'poverty':
+            povertyRateLabel
+                .classed("active", true)
+                .classed("inactive", false);
+            ageRateLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            incomeLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            break;
+        case 'age':
+            povertyRateLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            ageRateLabel
+                .classed("active", true)
+                .classed("inactive", false);
+            incomeLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            break;
+        case 'income':
+            povertyRateLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            ageRateLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            incomeLabel
+                .classed("active", true)
+                .classed("inactive", false);
+            break;
+        default:
+            povertyRateLabel
+                .classed("active", true)
+                .classed("inactive", false);
+            ageRateLabel
+                .classed("active", false)
+                .classed("inactive", true);
+            incomeLabel
+                .classed("active", false)
+                .classed("inactive", true);
+    }
+}
+////////////////////////////////////////////////////
+// function 10: setup active tag in Y axis
+////////////////////////////////////////////////////
+
+function setActiveYTag(chosenYAxis, healthcareLable, obesityLable, smokesLable) {
+
+    // enable selected tag and disable other tags
+    switch (chosenYAxis) {
+        case 'healthcare':
+            healthcareLable
+                .classed("active", true)
+                .classed("inactive", false);
+            obesityLable
+                .classed("active", false)
+                .classed("inactive", true);
+            smokesLable
+                .classed("active", false)
+                .classed("inactive", true);
+            break;
+        case 'obesity':
+            healthcareLable
+                .classed("active", false)
+                .classed("inactive", true);
+            obesityLable
+                .classed("active", true)
+                .classed("inactive", false);
+            smokesLable
+                .classed("active", false)
+                .classed("inactive", true);
+            break;
+        case 'smokes':
+            healthcareLable
+                .classed("active", false)
+                .classed("inactive", true);
+            obesityLable
+                .classed("active", false)
+                .classed("inactive", true);
+            smokesLable
+                .classed("active", true)
+                .classed("inactive", false);
+            break;
+        default:
+            healthcareLable
+                .classed("active", true)
+                .classed("inactive", false);
+            obesityLable
+                .classed("active", false)
+                .classed("inactive", true);
+            smokesLable
+                .classed("active", false)
+                .classed("inactive", true);
+    }
+}
+////////////////////////////////////////////////////
+// function 11: when window size changes, event will call the function
 ////////////////////////////////////////////////////
 function makeResponsive() {
 
@@ -348,6 +461,13 @@ function makeResponsive() {
 
         circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, 0);
 
+        if (!((chosenXAxis === "poverty") && (chosenYAxis === "healthcare"))) {
+            setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel, incomeLabel);
+            setActiveYTag(chosenYAxis, healthcareLable, obesityLable, smokesLable);
+
+        }
+
+
         // x axis labels event listener
         xlabelsGroup.selectAll("text")
             .on("click", function () {
@@ -373,52 +493,7 @@ function makeResponsive() {
                     //updates label with new info
                     circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, 800);
 
-                    // enable selected tag and disable other tags
-                    switch (chosenXAxis) {
-                        case 'poverty':
-                            povertyRateLabel
-                                .classed("active", true)
-                                .classed("inactive", false);
-                            ageRateLabel
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            incomeLabel
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            break;
-                        case 'age':
-                            povertyRateLabel
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            ageRateLabel
-                                .classed("active", true)
-                                .classed("inactive", false);
-                            incomeLabel
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            break;
-                        case 'income':
-                            povertyRateLabel
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            ageRateLabel
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            incomeLabel
-                                .classed("active", true)
-                                .classed("inactive", false);
-                            break;
-                        default:
-                            povertyRateLabel
-                                .classed("active", true)
-                                .classed("inactive", false);
-                            ageRateLabel
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            incomeLabel
-                                .classed("active", false)
-                                .classed("inactive", true);
-                    }
+                    setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel, incomeLabel);
 
                 }
             });
@@ -444,52 +519,7 @@ function makeResponsive() {
                     //updates label with new info
                     circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, 800);
 
-                    // enable selected tag and disable other tags
-                    switch (chosenYAxis) {
-                        case 'healthcare':
-                            healthcareLable
-                                .classed("active", true)
-                                .classed("inactive", false);
-                            obesityLable
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            smokesLable
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            break;
-                        case 'obesity':
-                            healthcareLable
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            obesityLable
-                                .classed("active", true)
-                                .classed("inactive", false);
-                            smokesLable
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            break;
-                        case 'smokes':
-                            healthcareLable
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            obesityLable
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            smokesLable
-                                .classed("active", true)
-                                .classed("inactive", false);
-                            break;
-                        default:
-                            healthcareLable
-                                .classed("active", true)
-                                .classed("inactive", false);
-                            obesityLable
-                                .classed("active", false)
-                                .classed("inactive", true);
-                            smokesLable
-                                .classed("active", false)
-                                .classed("inactive", true);
-                    }
+                    setActiveYTag(chosenYAxis, healthcareLable, obesityLable, smokesLable);
                 }
             });
 
