@@ -29,6 +29,13 @@ function makeResponsive() {
     ////////////////////////////////////////////////////
     // Initial Params
     var chosenXAxis = "poverty";
+    var chosenYAxis = "healthcare";
+    
+
+    // var yLinearScale = d3.scaleLinear()
+    // .domain([4, d3.max(censusData, d => d.healthcare) + 2])
+    // .range([height, 0]);
+
 
     // function used for updating x-scale var upon click on axis label
     function xScale(censusData, chosenXAxis) {
@@ -43,8 +50,21 @@ function makeResponsive() {
 
     }
 
+
+    // function used for updating y-scale var upon click on axis label
+        function yScale(censusData, chosenYAxis) {
+            // create scales
+            var yLinearScale = d3.scaleLinear()
+                .domain([4, d3.max(censusData, d => d[chosenYAxis])*0.8])
+                .range([height, 0]);
+    
+            return yLinearScale;    
+        }
+
+
+
     // function used for updating xAxis var upon click on axis label
-    function renderAxes(newXScale, xAxis) {
+    function renderXAxes(newXScale, xAxis) {
         var bottomAxis = d3.axisBottom(newXScale);
 
         xAxis.transition()
@@ -53,6 +73,18 @@ function makeResponsive() {
 
         return xAxis;
     }
+
+    // function used for updating yAxis var upon click on axis label
+    function renderYAxes(newXScale, yAxis) {
+        var bottomAxis = d3.axisBottom(newXScale);
+
+        xAxis.transition()
+            .duration(800)
+            .call(bottomAxis);
+
+        return xAxis;
+    }
+
 
     // function used for updating circles group with a transition to
     // new circles
@@ -144,10 +176,11 @@ function makeResponsive() {
         var xLinearScale = xScale(censusData, chosenXAxis);
 
         // Create y scale function
-        var yLinearScale = d3.scaleLinear()
-            .domain([4, d3.max(censusData, d => d.healthcare) + 2])
-            .range([height, 0]);
+        var yLinearScale = yScale(censusData, chosenYAxis);
 
+            // var yLinearScale = d3.scaleLinear()
+            // .domain([4, d3.max(censusData, d => d.healthcare) + 2])
+            // .range([height, 0]);
         // Step 3: Create axis functions
         // ==============================
         var bottomAxis = d3.axisBottom(xLinearScale).ticks(8);
@@ -209,7 +242,7 @@ function makeResponsive() {
         var healthcareLable = ylabelsGroup.append("text")
             .attr("y", 0 - margin.left)
             .attr("x", 0 - (height / 2))
-            .attr("dy", "3em")
+            .attr("dy", "4em")
             .attr("value", "healthcare") // value to grab for event listener
             .classed("active", true)
             .text("Lacks Healthcare (%)");
@@ -217,7 +250,7 @@ function makeResponsive() {
         var obesityLable = ylabelsGroup.append("text")
             .attr("y", 0 - margin.left)
             .attr("x", 0 - (height / 2))
-            .attr("dy", "2em")
+            .attr("dy", "3em")
             .attr("value", "obesity") // value to grab for event listener
             .classed("inactive", true)
             .text("Obesity Rate(%)");
@@ -225,19 +258,11 @@ function makeResponsive() {
         var smokesLable = ylabelsGroup.append("text")
             .attr("y", 0 - margin.left)
             .attr("x", 0 - (height / 2))
-            .attr("dy", "1em")
+            .attr("dy", "2em")
             .attr("value", "smokes") // value to grab for event listener
             .classed("inactive", true)
             .text("Smokes Rate(%)");
 
-
-        // chartGroup.append("text")
-        //     .attr("transform", "rotate(-90)")
-        //     .attr("y", 0 - margin.left)
-        //     .attr("x", 0 - (height / 2))
-        //     .attr("dy", "1em")
-        //     .classed("axis-text", true)
-        //     .text("Lacks Healthcare (%)");
 
         // updateToolTip function above csv import
         var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
@@ -260,7 +285,7 @@ function makeResponsive() {
                     xLinearScale = xScale(censusData, chosenXAxis);
 
                     // updates x axis with transition
-                    xAxis = renderAxes(xLinearScale, xAxis);
+                    xAxis = renderXAxes(xLinearScale, xAxis);
 
                     // updates circles with new x values
                     circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
@@ -318,13 +343,8 @@ function makeResponsive() {
                                 .classed("inactive", true);
                     }
                     //////////////////////////////////////////////
-
-
-
                 }
             });
-
-
         ////////////////////////////////////////////////////////////////////////////
     }).catch(function (error) {
         console.log(error);
