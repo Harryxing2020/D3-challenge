@@ -111,30 +111,30 @@ function makeResponsive() {
         //////////////////////////////////////////////
         switch (chosenXAxis) {
             case 'poverty':
-                label1 = "In Poverty (%)";
+                label1 = "Poverty Rate %:";
                 break;
             case 'age':
-                label1 = "Age(median) (%)";
+                label1 = "Age Rate %:";
                 break;
             case 'income':
-                label1 = "Household income(median)";
+                label1 = "Household $:";
                 break;
             default:
-                label1 = "In Poverty (%)";
+                label1 = "Poverty:";
         }
 
         switch (chosenYAxis) {
             case 'healthcare':
-                label2 = "Lack of healthcare (%)";
+                label2 = "Healthcare Rate %:";
                 break;
             case 'obesity':
-                label2 = "Obesity Rate (%)";
+                label2 = "Obesity Rate %:";
                 break;
             case 'smokes':
-                label2 = "Smoke Rate (%)";
+                label2 = "Smoke Rate %:";
                 break;
             default:
-                label2 = "Lack of healthcare (%)";
+                label2 = "Healthcare Rate %";
         }
 
         //////////////////////////////////////////////
@@ -142,7 +142,7 @@ function makeResponsive() {
 
         var toolTip = d3.tip()
             .attr("class", "tooltip")
-            .offset([80, -60])
+            // .offset([80, -60])
             .html(function (d) {
                 return (`${d.state}<hr>${label1} ${d[chosenXAxis]} <br>${label2} ${d[chosenYAxis]}`);
 
@@ -283,7 +283,7 @@ function makeResponsive() {
             .attr("y", 60)
             .attr("value", "income") // value to grab for event listener
             .classed("inactive", true)
-            .text("Household income(median)");
+            .text("Household income(median) $");
 
         // Create group for three y-axis labels
         //obesity smokes
