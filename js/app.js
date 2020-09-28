@@ -3,6 +3,9 @@
 ////////////////////////////////////////////////////
 // init the range size
 var svgHeight, svgWidth, width, height, censusData = [];
+// Initial Params
+var chosenXAxis = "poverty";
+var chosenYAxis = "healthcare";
 
 var margin = {
     top: 70,
@@ -46,7 +49,8 @@ function yScale(chosenYAxis) {
 // function 3: used for updating xAxis var upon click on axis label
 ////////////////////////////////////////////////////
 function renderXAxes(newXScale, xAxis) {
-    var bottomAxis = d3.axisBottom(newXScale).ticks(8);
+
+    var bottomAxis = d3.axisBottom(newXScale).ticks(8 * window.innerWidth / 1295);
 
     xAxis.transition()
         .duration(800)
@@ -58,7 +62,7 @@ function renderXAxes(newXScale, xAxis) {
 // function 4: used for updating yAxis var upon click on axis label
 ////////////////////////////////////////////////////
 function renderYAxes(newYScale, yAxis) {
-    var leftAxis = d3.axisLeft(newYScale).ticks(8);
+    var leftAxis = d3.axisLeft(newYScale).ticks(8 * window.innerHeight / 754);
 
     yAxis.transition()
         .duration(800)
@@ -219,9 +223,7 @@ function makeResponsive() {
     var chartGroup = svg.append("g")
         .attr("transform", `translate(${margin.left}, ${margin.top})`);
 
-    // Initial Params
-    var chosenXAxis = "poverty";
-    var chosenYAxis = "healthcare";
+
     // Import Data
 
     ////////////////////////////////////////////////////
@@ -258,9 +260,9 @@ function makeResponsive() {
         var yLinearScale = yScale(chosenYAxis);
 
         // Create axis functions
-        var bottomAxis = d3.axisBottom(xLinearScale).ticks(8 * window.innerWidth/1295);
-        var leftAxis = d3.axisLeft(yLinearScale).ticks(8*window.innerHeight/754);
-        
+        var bottomAxis = d3.axisBottom(xLinearScale).ticks(8 * window.innerWidth / 1295);
+        var leftAxis = d3.axisLeft(yLinearScale).ticks(8 * window.innerHeight / 754);
+
         var xAxis = chartGroup.append("g")
             .classed("x-axis", true)
             .attr("transform", `translate(0, ${height})`)
@@ -277,11 +279,11 @@ function makeResponsive() {
             .append("circle")
             .attr("cx", d => xLinearScale(d[chosenXAxis]))
             .attr("cy", d => yLinearScale(d[chosenYAxis]))
-            .attr("r", 15 * window.innerWidth/1295)
+            .attr("r", 15 * window.innerWidth / 1295)
             .attr("fill", "SteelBlue")
             .attr("opacity", ".5");
 
-            
+
         // append circle label 
         var circleLabels = chartGroup.selectAll(null).data(censusData).enter().append("text");
 
