@@ -6,7 +6,7 @@ function makeResponsive() {
         svgArea.remove();
     }
     var svgHeight = window.innerHeight - 100;
-    var svgWidth = window.innerWidth;
+    var svgWidth = window.innerWidth-100;
 
     var margin = {
         top: 20,
@@ -30,11 +30,6 @@ function makeResponsive() {
     // Initial Params
     var chosenXAxis = "poverty";
     var chosenYAxis = "healthcare";
-    
-
-    // var yLinearScale = d3.scaleLinear()
-    // .domain([4, d3.max(censusData, d => d.healthcare) + 2])
-    // .range([height, 0]);
 
 
     // function used for updating x-scale var upon click on axis label
@@ -52,20 +47,20 @@ function makeResponsive() {
 
 
     // function used for updating y-scale var upon click on axis label
-        function yScale(censusData, chosenYAxis) {
-            // create scales
-            var yLinearScale = d3.scaleLinear()
-                .domain([4, d3.max(censusData, d => d[chosenYAxis])*0.8])
-                .range([height, 0]);
-    
-            return yLinearScale;    
-        }
+    function yScale(censusData, chosenYAxis) {
+        // create scales
+        var yLinearScale = d3.scaleLinear()
+            .domain([4, d3.max(censusData, d => d[chosenYAxis])*1.1])
+            .range([height, 0]);
+
+        return yLinearScale;
+    }
 
 
 
     // function used for updating xAxis var upon click on axis label
     function renderXAxes(newXScale, xAxis) {
-        var bottomAxis = d3.axisBottom(newXScale);
+        var bottomAxis = d3.axisBottom(newXScale).ticks(8);
 
         xAxis.transition()
             .duration(800)
@@ -75,20 +70,20 @@ function makeResponsive() {
     }
 
     // function used for updating yAxis var upon click on axis label
-    function renderYAxes(newXScale, yAxis) {
-        var bottomAxis = d3.axisBottom(newXScale);
+    function renderYAxes(newYScale, yAxis) {
+        var leftAxis = d3.axisLeft(newYScale).ticks(8);
 
-        xAxis.transition()
+        yAxis.transition()
             .duration(800)
-            .call(bottomAxis);
+            .call(leftAxis);
 
-        return xAxis;
+        return yAxis;
     }
 
 
     // function used for updating circles group with a transition to
     // new circles
-    function renderCircles(circlesGroup, newXScale, chosenXAxis) {
+    function renderXCircles(circlesGroup, newXScale, chosenXAxis) {
 
         circlesGroup.transition()
             .duration(800)
@@ -96,27 +91,50 @@ function makeResponsive() {
 
         return circlesGroup;
     }
+    function renderYCircles(circlesGroup, newYScale, chosenYAxis) {
+
+        circlesGroup.transition()
+            .duration(800)
+            .attr("cy", d => newYScale(d[chosenYAxis]));
+
+        return circlesGroup;
+    }
 
     // function used for updating circles group with new tooltip
-    function updateToolTip(chosenXAxis, circlesGroup) {
+    function updateToolTip(chosenXAxis, chosenYAxis, circlesGroup) {
 
-        var label;
+        var label1, label2;
 
 
         //////////////////////////////////////////////
         switch (chosenXAxis) {
             case 'poverty':
-                label = "In Poverty (%)";
+                label1 = "In Poverty (%)";
                 break;
             case 'age':
-                label = "Age(median) (%)";
+                label1 = "Age(median) (%)";
                 break;
             case 'income':
-                label = "Household income(median)";
+                label1 = "Household income(median)";
                 break;
             default:
-                label = "In Poverty (%)";
+                label1 = "In Poverty (%)";
         }
+
+        switch (chosenYAxis) {
+            case 'healthcare':
+                label2 = "Lack of healthcare (%)";
+                break;
+            case 'obesity':
+                label2 = "Obesity Rate (%)";
+                break;
+            case 'smokes':
+                label2 = "Smoke Rate (%)";
+                break;
+            default:
+                label2 = "Lack of healthcare (%)";
+        }
+
         //////////////////////////////////////////////
 
 
@@ -124,7 +142,7 @@ function makeResponsive() {
             .attr("class", "tooltip")
             .offset([80, -60])
             .html(function (d) {
-                return (`${d.state}<br>${label} ${d[chosenXAxis]}%<br>${'Healthcare:'} ${d.healthcare}%`);
+                return (`${d.state}<br>${label1} ${d[chosenXAxis]} <br>${label2} ${d[chosenYAxis]}%`);
 
             });
 
@@ -178,9 +196,6 @@ function makeResponsive() {
         // Create y scale function
         var yLinearScale = yScale(censusData, chosenYAxis);
 
-            // var yLinearScale = d3.scaleLinear()
-            // .domain([4, d3.max(censusData, d => d.healthcare) + 2])
-            // .range([height, 0]);
         // Step 3: Create axis functions
         // ==============================
         var bottomAxis = d3.axisBottom(xLinearScale).ticks(8);
@@ -193,8 +208,13 @@ function makeResponsive() {
             .call(bottomAxis);
 
         // append y axis
-        chartGroup.append("g")
+        var yAxis = chartGroup.append("g")
             .call(leftAxis);
+
+
+        // var yAxis = chartGroup.append("g")
+        //     .classed("x-axis", true)
+        //     .call(leftAxis);
 
         // append initial circles
         var circlesGroup = chartGroup.selectAll("circle")
@@ -202,10 +222,23 @@ function makeResponsive() {
             .enter()
             .append("circle")
             .attr("cx", d => xLinearScale(d[chosenXAxis]))
-            .attr("cy", d => yLinearScale(d.healthcare))
+            .attr("cy", d => yLinearScale(d[chosenYAxis]))
             .attr("r", 15)
             .attr("fill", "SteelBlue")
             .attr("opacity", ".5");
+
+            censusData.forEach(function(data){
+                if (data.id===33){
+                    console.log(data.id)
+                    console.log(data.poverty)
+                    console.log(data.obesity)
+                    console.log(data.smokes)
+
+                }
+                
+
+            })
+
 
         //////////////////////////////////////////////////////////////
 
@@ -265,7 +298,7 @@ function makeResponsive() {
 
 
         // updateToolTip function above csv import
-        var circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+        var circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
         //////////////////////////////////////////////////////////////
         // x axis labels event listener
@@ -273,6 +306,8 @@ function makeResponsive() {
             .on("click", function () {
                 // get value of selection
                 var value = d3.select(this).attr("value");
+
+                console.log("test ", value)
                 if (value !== chosenXAxis) {
 
                     // replaces chosenXAxis with value
@@ -288,10 +323,10 @@ function makeResponsive() {
                     xAxis = renderXAxes(xLinearScale, xAxis);
 
                     // updates circles with new x values
-                    circlesGroup = renderCircles(circlesGroup, xLinearScale, chosenXAxis);
+                    circlesGroup = renderXCircles(circlesGroup, xLinearScale, chosenXAxis);
 
                     // updates tooltips with new info
-                    circlesGroup = updateToolTip(chosenXAxis, circlesGroup);
+                    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
 
 
                     //////////////////////////////////////////////
@@ -339,6 +374,86 @@ function makeResponsive() {
                                 .classed("active", false)
                                 .classed("inactive", true);
                             incomeLabel
+                                .classed("active", false)
+                                .classed("inactive", true);
+                    }
+                    //////////////////////////////////////////////
+                }
+            });
+
+
+        //////////////////////////////////////////////////////////////
+        // y axis labels event listener
+        ylabelsGroup.selectAll("text")
+            .on("click", function () {
+                // get value of selection
+                var value = d3.select(this).attr("value");
+
+                if (value !== chosenYAxis) {
+
+                    // replaces chosenXAxis with value
+                    chosenYAxis = value;
+
+                    console.log(chosenYAxis)
+
+                    // functions here found above csv import
+                    // updates y scale for new data
+                    yLinearScale = yScale(censusData, chosenYAxis);
+
+                    // updates y axis with transition
+                    yAxis = renderYAxes(yLinearScale, yAxis);
+
+                    // updates circles with new y values
+                    circlesGroup = renderYCircles(circlesGroup, yLinearScale, chosenYAxis);
+
+                    // updates tooltips with new info
+                    circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
+
+                    //////////////////////////////////////////////
+                    switch (chosenYAxis) {
+                        case 'healthcare':
+                            healthcareLable
+                                .classed("active", true)
+                                .classed("inactive", false);
+                            obesityLable
+                                .classed("active", false)
+                                .classed("inactive", true);
+                            smokesLable
+                                .classed("active", false)
+                                .classed("inactive", true);
+
+                            break;
+                        case 'obesity':
+                            healthcareLable
+                                .classed("active", false)
+                                .classed("inactive", true);
+                            obesityLable
+                                .classed("active", true)
+                                .classed("inactive", false);
+                            smokesLable
+                                .classed("active", false)
+                                .classed("inactive", true);
+                            break;
+                        case 'smokes':
+                            healthcareLable
+                                .classed("active", false)
+                                .classed("inactive", true);
+                            obesityLable
+                                .classed("active", false)
+                                .classed("inactive", true);
+                            smokesLable
+                                .classed("active", true)
+                                .classed("inactive", false);
+                            break;
+                        default:
+                            healthcareLable
+                                .classed("active", true)
+                                .classed("inactive", false);
+                            obesityLable
+                                .classed("active", false)
+                                .classed("inactive", true);
+                            smokesLable
                                 .classed("active", false)
                                 .classed("inactive", true);
                     }
