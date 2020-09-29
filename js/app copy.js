@@ -459,11 +459,49 @@ function makeResponsive() {
         circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, 0);
 
         //if windows size changes, the X and Y tag select is different from defaut selection
-        if (!((chosenXAxis === "poverty") && (chosenYAxis === "healthcare"))) {
-            setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel, incomeLabel);
-            setActiveYTag(chosenYAxis, healthcareLable, obesityLable, smokesLable);
-        }
+        // if (!((chosenXAxis === "poverty") && (chosenYAxis === "healthcare"))) {
+        //     setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel, incomeLabel);
+        //     setActiveYTag(chosenYAxis, healthcareLable, obesityLable, smokesLable);
+        // }
 
+
+
+        ////////////////////////////////////////////////////////////////////
+        // Event listener for window resize.
+        // When the browser window is resized, makeResponsive() is called.
+        // d3.select(window).on("resize", function () {
+
+        //     console.log("test-------")
+        //     // updates X scale for new data
+        //     xLinearScale = xScale(chosenXAxis);
+        //     // updates y scale for new data
+        //     yLinearScale = yScale(chosenYAxis);
+
+        //     // updates x axis with transition
+        //     xAxis = renderXAxes(xLinearScale, xAxis);
+        //     // updates y axis with transition
+        //     yAxis = renderYAxes(yLinearScale, yAxis);
+
+        //     // updates circles with new x values
+        //     circlesGroup = renderXCircles(circlesGroup, xLinearScale, chosenXAxis);
+        //     // updates circles with new y values
+        //     circlesGroup = renderYCircles(circlesGroup, yLinearScale, chosenYAxis);
+
+        //     // updates tooltips with new info
+        //     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+        //     // updates tooltips with new info
+        //     circlesGroup = updateToolTip(chosenXAxis, chosenYAxis, circlesGroup);
+
+
+        //     //updates label with new info
+        //     circleLabels = addLabels(circleLabels, chosenXAxis, chosenYAxis, xLinearScale, yLinearScale, 0);
+
+        //     setActiveXTag(chosenXAxis, povertyRateLabel, ageRateLabel, incomeLabel);
+        //     setActiveYTag(chosenYAxis, healthcareLable, obesityLable, smokesLable);
+
+        // });
+
+        ////////////////////////////////////////////////////////////////////
 
         // x axis labels event listener
         xlabelsGroup.selectAll("text")
@@ -530,7 +568,7 @@ function makeResponsive() {
 makeResponsive();
 // Event listener for window resize.
 // When the browser window is resized, makeResponsive() is called.
-d3.select(window).on("resize", makeResponsive);
+// d3.select(window).on("resize", makeResponsive);
 
 
 
